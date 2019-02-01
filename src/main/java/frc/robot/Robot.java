@@ -7,9 +7,18 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.IterativeRobot;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Scheduler;
+
+import frc.robot.subsystems.TankDrive;
+import frc.util.Constants;
+import frc.command.Teleop;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -18,11 +27,23 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends IterativeRobot {
+public class Robot extends TimedRobot {
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
+
+  Joystick driverJoystick;
+  Joystick operatorJoystick;
+
+  WPI_TalonSRX talonFR;
+	WPI_TalonSRX talonFL;
+	WPI_TalonSRX talonBR;
+  WPI_TalonSRX talonBL;
+  
+  TankDrive tankDrive;
+
+
 
   /**
    * This function is run when the robot is first started up and should be
@@ -30,6 +51,17 @@ public class Robot extends IterativeRobot {
    */
   @Override
   public void robotInit() {
+
+    driverJoystick = new Joystick(0);
+    operatorJoystick = new Joystick(1);
+
+    talonFR = new WPI_TalonSRX(Constants.RIGHT_MASTER_TALON_ID);
+    talonFL = new WPI_TalonSRX(Constants.LEFT_MASTER_TALON_ID);
+		talonBR = new WPI_TalonSRX(Constants.RIGHT_SLAVE_TALON_ID);
+		talonBL = new WPI_TalonSRX(Constants.LEFT_SLAVE_TALON_ID);
+
+    tankDrive = new TankDrive(talonFL, talonFR, talonBL, talonBR);
+
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
@@ -82,11 +114,24 @@ public class Robot extends IterativeRobot {
     }
   }
 
+
+  public void teleopInit() {
+    
+    tankDrive.teleopConfig();
+
+    Command teleop = new Teleop(tankDrive, driverJoystick, operatorJoystick );
+		Scheduler.getInstance().add(teleop);
+
+
+  } 
   /**
    * This function is called periodically during operator control.
    */
   @Override
   public void teleopPeriodic() {
+
+    Scheduler.getInstance().run();
+
   }
 
   /**
