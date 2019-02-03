@@ -23,11 +23,12 @@ public class TankDrive extends Subsystem {
         this.talonBL = talonBL;
         this.talonBR = talonBR;
 
-        config();
+        configureTalons();
 
     }
 
-    private void config() {
+    //configures base talons
+    private void configureTalons() {
 
         talonFL.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative,Constants.VELOCITY_PID_INDEX,Constants.TIMEOUT);
         talonFR.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative,Constants.VELOCITY_PID_INDEX,Constants.TIMEOUT);
@@ -59,6 +60,7 @@ public class TankDrive extends Subsystem {
     }
 
     public void autonomousConfig() {
+        zeroEncoders();
 
         talonFR.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 1.0, 1, 0, Constants.TIMEOUT);
 		talonFL.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 1.0, 1, 0, Constants.TIMEOUT);
