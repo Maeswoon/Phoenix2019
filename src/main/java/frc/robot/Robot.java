@@ -43,7 +43,7 @@ public class Robot extends TimedRobot {
   
   TankDrive tankDrive;
 
-
+  private boolean teleopOpControl;
 
   /**
    * This function is run when the robot is first started up and should be
@@ -119,7 +119,7 @@ public class Robot extends TimedRobot {
     
     tankDrive.teleopConfig();
 
-    Command teleop = new Teleop(tankDrive, driverJoystick, operatorJoystick );
+    Command teleop = new Teleop(this, tankDrive, driverJoystick, operatorJoystick );
 		Scheduler.getInstance().add(teleop);
 
 
@@ -139,5 +139,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+  }
+
+  public void setTeleopOpControl(boolean teleopOpControl) {
+    this.teleopOpControl = teleopOpControl;
+  }
+
+  public boolean getTeleopOpControl() {
+    return this.teleopOpControl;
   }
 }

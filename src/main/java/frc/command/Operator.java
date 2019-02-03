@@ -2,11 +2,14 @@ package frc.command;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.Robot;
 
 public class Operator extends Command {
 
-    public Operator(Joystick OperatorJoystick) {
-        
+    private Robot m_robot;
+
+    public Operator(Robot robot, Joystick OperatorJoystick) {
+        m_robot = robot;
     }
     
     protected void initialize(){
@@ -14,7 +17,7 @@ public class Operator extends Command {
     }
 
     protected void execute(){
-
+        if(!m_robot.getTeleopOpControl()) return;
     }
 
     protected void end(){
