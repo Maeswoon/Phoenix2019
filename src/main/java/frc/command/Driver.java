@@ -25,7 +25,7 @@ public class Driver extends Command {
 
     protected void execute(){
         if(!m_robot.getTeleopOpControl()) return;
-
+        System.out.println(m_driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y) + " " + m_driverJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_Y));
         m_tankDrive.setPercentage(m_driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y), m_driverJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_Y));
     }
 

@@ -36,4 +36,7 @@ public class Constants {
 
     public static final int XBOX_BUTTON_LEFT_JOYSTICK_PRESSED = 9;
     public static final int XBOX_BUTTON_RIGHT_JOYSTICK_PRESSED = 10;
+
+    public static final double JOYSTICK_DEADZONE = 0.1;
+    public static final int NEAR_TARGET = 12;
 }

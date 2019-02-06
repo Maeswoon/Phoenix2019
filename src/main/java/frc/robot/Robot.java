@@ -43,7 +43,10 @@ public class Robot extends TimedRobot {
   
   TankDrive tankDrive;
 
-  private boolean teleopOpControl;
+  private boolean teleopOpControl = true;
+
+  public double targetCenterX = 0;
+  public double targetDistance = 0;
 
   /**
    * This function is run when the robot is first started up and should be
