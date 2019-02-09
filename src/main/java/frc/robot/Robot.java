@@ -42,7 +42,7 @@ public class Robot extends TimedRobot {
   WPI_TalonSRX talonBL;
   
   TankDrive tankDrive;
-
+  PCMHandler pcm;
 
 
   /**
@@ -54,12 +54,12 @@ public class Robot extends TimedRobot {
 
     driverJoystick = new Joystick(0);
     operatorJoystick = new Joystick(1);
-
+    pcm = new PCMHandler(11);
     talonFR = new WPI_TalonSRX(Constants.RIGHT_MASTER_TALON_ID);
     talonFL = new WPI_TalonSRX(Constants.LEFT_MASTER_TALON_ID);
 		talonBR = new WPI_TalonSRX(Constants.RIGHT_SLAVE_TALON_ID);
 		talonBL = new WPI_TalonSRX(Constants.LEFT_SLAVE_TALON_ID);
-
+   
     tankDrive = new TankDrive(talonFL, talonFR, talonBL, talonBR);
 
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
@@ -116,7 +116,7 @@ public class Robot extends TimedRobot {
 
 
   public void teleopInit() {
-    
+    pcm.turnOn();
     tankDrive.teleopConfig();
 
     Command teleop = new Teleop(tankDrive, driverJoystick, operatorJoystick );

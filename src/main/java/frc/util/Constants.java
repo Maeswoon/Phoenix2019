@@ -36,4 +36,11 @@ public class Constants {
 
     public static final int XBOX_BUTTON_LEFT_JOYSTICK_PRESSED = 9;
     public static final int XBOX_BUTTON_RIGHT_JOYSTICK_PRESSED = 10;
+
+    public static final int PCM_CAN_ID = 11;
+	public static final int PCM_SLOT_HIGHGEAR = 0;
+    public static final int PCM_SLOT_LOWGEAR = 1;
+
+    
+    
 }
