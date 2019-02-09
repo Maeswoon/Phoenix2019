@@ -19,7 +19,7 @@ public class PCMHandler {
 		
 		highgearSol = new Solenoid(Constants.PCM_CAN_ID, Constants.PCM_SLOT_HIGHGEAR);
 		lowgearSol = new Solenoid(Constants.PCM_CAN_ID, Constants.PCM_SLOT_LOWGEAR);
-
+		clawSol = new Solenoid(Constants.PCM_CAN_ID, Constants.PCM_BOX_MANIPULATOR);
 	}
 	
 	public void turnOn(){
@@ -43,8 +43,12 @@ public class PCMHandler {
 		return compressor.getCompressorCurrent();
 	}
 	
+	public void openManipulator() {
+		clawSol.set(false);
+	}
 	
-
-
+	public void closeManipulator() {
+		clawSol.set(true);
+	}
 	
 }

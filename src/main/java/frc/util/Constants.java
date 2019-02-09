@@ -7,6 +7,10 @@ public class Constants {
 	public static final int RIGHT_MASTER_TALON_ID = 2;
 	public static final int LEFT_SLAVE_TALON_ID = 3;
     public static final int RIGHT_SLAVE_TALON_ID = 4;
+
+    public static final int TALON_INTAKE_RIGHT = 7;
+	public static final int TALON_INTAKE_LEFT = 5;
+	public static final int TALON_TIP = 8;
     
     public static final int VELOCITY_PID_INDEX = 0;
     public static final int DISTANCE_PID_INDEX = 1;
@@ -37,10 +41,10 @@ public class Constants {
     public static final int XBOX_BUTTON_LEFT_JOYSTICK_PRESSED = 9;
     public static final int XBOX_BUTTON_RIGHT_JOYSTICK_PRESSED = 10;
 
+    //solenoid constants
     public static final int PCM_CAN_ID = 11;
 	public static final int PCM_SLOT_HIGHGEAR = 0;
     public static final int PCM_SLOT_LOWGEAR = 1;
-
-    
+    public static final int PCM_BOX_MANIPULATOR = 2;
     
 }
