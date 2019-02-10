@@ -20,18 +20,19 @@ public class DriveVoltageTime extends Command {
 
   public DriveVoltageTime(TankDrive tankDrive, double driveTime) {
     m_tankDrive = tankDrive;
-    this.driveTime = 1000 * driveTime;
+    this.driveTime = 1000 * Math.abs(driveTime);
     this.backward = (driveTime < 0);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    startTime = System.currentTimeMillis();
+    this.startTime = System.currentTimeMillis();
+    m_tankDrive.autonomousConfig();
     if(this.backward)
-      m_tankDrive.setPercentage(-0.5, -0.5);
-    else
       m_tankDrive.setPercentage(0.5, 0.5);
+    else
+      m_tankDrive.setPercentage(-0.5, -0.5);
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -43,12 +44,14 @@ public class DriveVoltageTime extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
+    //System.out.println(System.currentTimeMillis() - startTime);
     return System.currentTimeMillis() - startTime >= driveTime;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    //System.out.println("ending");
     m_tankDrive.setPercentage(0, 0);
   }
 

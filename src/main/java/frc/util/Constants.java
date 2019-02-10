@@ -39,4 +39,7 @@ public class Constants {
 
     public static final double JOYSTICK_DEADZONE = 0.1;
     public static final int NEAR_TARGET = 12;
+
+    public static final double TARGET_CENTERX_MUL = 1;
+    public static final double TARGET_DISTANCE_MUL = 1;
 }

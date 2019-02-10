@@ -17,7 +17,7 @@ public class Operator extends Command {
     }
 
     protected void execute(){
-        if(!m_robot.getTeleopOpControl()) return;
+        
     }
 
     protected void end(){

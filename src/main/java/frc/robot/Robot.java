@@ -11,14 +11,14 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
-
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.command.ParkManeuver;
+import frc.command.Teleop;
 import frc.robot.subsystems.TankDrive;
 import frc.util.Constants;
-import frc.command.Teleop;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -42,8 +42,6 @@ public class Robot extends TimedRobot {
   WPI_TalonSRX talonBL;
   
   TankDrive tankDrive;
-
-  private boolean teleopOpControl = true;
 
   public double targetCenterX = 0;
   public double targetDistance = 0;
@@ -133,7 +131,14 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
+    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_A)) {
+      Scheduler.getInstance().removeAll();
+      Scheduler.getInstance().add(new ParkManeuver(this, driverJoystick, tankDrive));
+      Scheduler.getInstance().add(new Teleop(this, tankDrive, driverJoystick, operatorJoystick));
+    }
+
     Scheduler.getInstance().run();
+    
 
   }
 
@@ -142,13 +147,5 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-  }
-
-  public void setTeleopOpControl(boolean teleopOpControl) {
-    this.teleopOpControl = teleopOpControl;
-  }
-
-  public boolean getTeleopOpControl() {
-    return this.teleopOpControl;
   }
 }

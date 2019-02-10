@@ -22,7 +22,7 @@ public class DriveVoltageTimeOneSide extends Command {
 
   public DriveVoltageTimeOneSide(TankDrive tankDrive, double driveTime, String side) {
     m_tankDrive = tankDrive;
-    this.driveTime = 1000 * driveTime;
+    this.driveTime = 1000 * Math.abs(driveTime);
     this.backward = (driveTime < 0);
     m_side = side;
   }
@@ -33,14 +33,14 @@ public class DriveVoltageTimeOneSide extends Command {
     startTime = System.currentTimeMillis();
     if(m_side.equals("left")) {
       if(this.backward)
-        m_tankDrive.setPercentage(-0.5, 0);
-      else
         m_tankDrive.setPercentage(0.5, 0);
+      else
+        m_tankDrive.setPercentage(-0.5, 0);
     } else if(m_side.equals("right")) {
       if(this.backward)
-        m_tankDrive.setPercentage(0, -0.5);
-      else
         m_tankDrive.setPercentage(0, 0.5);
+      else
+        m_tankDrive.setPercentage(0, -0.5);
     }
   }
 

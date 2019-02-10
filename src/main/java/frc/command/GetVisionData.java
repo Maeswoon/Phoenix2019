@@ -21,8 +21,8 @@ public class GetVisionData extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    m_robot.targetCenterX = 94; //obviously not actually 94 lol
-    m_robot.targetDistance = 1248; //obviously not actually 1248 lol
+    m_robot.targetCenterX = 4; //obviously not actually 94 lol
+    m_robot.targetDistance = 24; //obviously not actually 1248 lol
   }
 
   // Called repeatedly when this Command is scheduled to run
