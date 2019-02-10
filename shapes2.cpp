@@ -20,9 +20,8 @@ int lastY1 = -1;
 int lastX2 = -1;
 int lastY2 = -1;
 
-int distanceFromCenterToVisionTarget = 1111;
-int distanceRatio = 1; //knownLengthOfVisionTarget / knownDistanceFromVisionTarget;
-
+double focalLengthDistance = 969.0; //knownLengthOfVisionTarget / knownDistanceFromVisionTarget;
+double focalLengthCenter = 3087.0;
 
 
 void trackObject(IplImage* imgThresh){
@@ -99,6 +98,7 @@ void trackObject(IplImage* imgThresh){
 	float shortSide;
 	float longSide;
 	bool target = 0;
+	int realTarget = 0;
 	bool similarSides = false;
 	bool similarSides2 = false;
 
@@ -124,8 +124,21 @@ if ( (b > (d - 10)) && (b < (d + 10)) ) {
 	 } else {
 	target = -3;   //ignore the shape
 	   }
+	   
+	int dist1 = (pt[1]->x - pt[0]->x) * (pt[1]->x - pt[0]->x) + (pt[1]->y - pt[0]->y) * (pt[1]->y - pt[0]->y);
+        int dist2 = (pt[2]->x - pt[1]->x) * (pt[2]->x - pt[1]->x) + (pt[2]->y - pt[1]->y) * (pt[2]->y - pt[1]->y);
+	cout << "dist1 " << dist1 << " dist2 " << dist2 << "\n";
+	
+	// DETERMINE LONG and SHORT SIDES  (within range)  ///if ((e / g) == 2.75){
+	if ( dist1 > dist2 ){
+ 	  //e = long side.  long side found first, target is Right
+	 realTarget = 1;
+	} else if ( dist1 < dist2){
+	  //g = long side.  short side found first, target is Left
+	realTarget = 2;
+	 }
 
- cout << "target = " << target << "\n";
+ cout << "REAL target = " << realTarget << "\n";
 
 //triangulate to pare down more distractions
 if (target == 1 || target == 2){ //if target is Right side(1) or left side (2) (skip if neither)
@@ -159,7 +172,7 @@ if (target == 1 || target == 2){ //if target is Right side(1) or left side (2) (
 ///
 
 //only draw it if these conditions are true:
-	if ((target == 1 || target == 2) && similarSides && similarSides2) {
+	if ((target == 1 || target == 2) && similarSides && similarSides2 && pt[0]->y >= imgTracking->height / 3) {
 
 	  //print coords
  	  cout << "Point 0 coords (x, y):  " << pt[0]->x << " , " << pt[0]->y << "\n";
@@ -173,20 +186,30 @@ if (target == 1 || target == 2){ //if target is Right side(1) or left side (2) (
          cvLine(imgTracking, *pt[1], *pt[2], cvScalar(50,155,255),4); //yellow should be right
          cvLine(imgTracking, *pt[2], *pt[3], cvScalar(0,0,255),4); //red should be bottom
          cvLine(imgTracking, *pt[3], *pt[0], cvScalar(0,255,0),4);
-	int centerX = imgTracking->width / 2;
-	 int distanceToTarget = a / distanceRatio;
-	 
-	 if (target == 1) {
-		int distanceToCenter =  (pt[0]->x - distanceFromCenterToVisionTarget) - centerX;
+	 int centerX = imgTracking->width / 2;
+	 double distanceToTarget = focalLengthDistance / a;
+	 //cout << "a = " << a << " and distance = " << distanceToTarget << "\n";
+	 cout << "pt[0].x " << pt[0]->x << " for tergt " << target << "\n";
+	 shared_ptr<NetworkTable> visionTable = NetworkTable::GetTable("Vision");
+	 visionTable->PutNumber("Distance", distanceToTarget);
+	 double  distanceFromCenterToVisionTarget =focalLengthCenter / distanceToTarget;
+	 int distanceToCenter = 0;
+	 if (realTarget == 1) {
+		distanceToCenter =  (pt[0]->x - distanceFromCenterToVisionTarget) - centerX;
+		visionTable->PutNumber("Distance", distanceToCenter);
 	 }
-	 if (target == 2) {
-		int distanceToCenter =  (pt[0]->x + distanceFromCenterToVisionTarget) - centerX;
+	 if (realTarget == 2) {
+		distanceToCenter =  (pt[0]->x + distanceFromCenterToVisionTarget) - centerX;
+		visionTable->PutNumber("Distance", distanceToCenter);
 	 }
+	 cout << distanceToCenter << " to center\n";
 	   
 
 ///
 
      }
+	 
+      }
 		
 		  
 	   //NetworkTableEntry::ForceSetDouble(1);
