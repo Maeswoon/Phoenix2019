@@ -5,14 +5,15 @@ import frc.robot.PCMHandler;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class BoxManipulator extends Subsystem {
-	public WPI_TalonSRX talonIntakeRight;
-	public WPI_TalonSRX talonIntakeLeft;
+	public WPI_VictorSPX talonIntakeRight;
+	public WPI_VictorSPX talonIntakeLeft;
 	public WPI_TalonSRX talonTip;
 	private PCMHandler pcm;
 	Timer timer = new Timer();
@@ -26,7 +27,7 @@ public class BoxManipulator extends Subsystem {
 	private final boolean InvertMotor = false;
 	
 	
-	public BoxManipulator(WPI_TalonSRX talonIntakeRight, WPI_TalonSRX talonIntakeLeft, WPI_TalonSRX talonTip, PCMHandler pcm) {
+	public BoxManipulator(WPI_VictorSPX talonIntakeRight, WPI_VictorSPX talonIntakeLeft, WPI_TalonSRX talonTip, PCMHandler pcm) {
 		this.talonIntakeRight = talonIntakeRight;
 		this.talonIntakeLeft = talonIntakeLeft;
 		this.talonTip = talonTip;
@@ -45,8 +46,6 @@ public class BoxManipulator extends Subsystem {
 		talonIntakeRight.config_kI(PidLoopIndex, 0.0, PidTimeOutMs);
 		talonIntakeRight.config_kD(PidLoopIndex, 0.0, PidTimeOutMs);
 		
-		talonIntakeRight.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
-		talonIntakeLeft.getSensorCollection().setQuadraturePosition(0, PidTimeOutMs);
 		this.talonIntakeLeft.follow(this.talonIntakeRight);
 		//Need equivalent for solenoids
 		this.pcm = pcm;

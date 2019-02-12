@@ -26,11 +26,15 @@ public class Operator extends Command {
             m_manipulator.closeManipulator();
         }
 
+        //push and pull the intakes based of the button pressed
         if(m_operatorJoystick.getRawButton(Constants.XBOX_BUTTON_A)){
-            m_manipulator.goToPosition(500);
+            m_manipulator.pushBox();
+        }else if(m_operatorJoystick.getRawButton(Constants.XBOX_BUTTON_B)){
+            m_manipulator.pullBox();
         }else{
-            m_manipulator.goToPosition(0);
+            m_manipulator.stop();
         }
+        
     }
 
     protected void end(){

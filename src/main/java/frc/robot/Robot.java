@@ -8,6 +8,7 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -41,8 +42,8 @@ public class Robot extends TimedRobot {
 	WPI_TalonSRX talonBR;
   WPI_TalonSRX talonBL;
   
-  WPI_TalonSRX talonIntakeLeft;
-  WPI_TalonSRX talonIntakeRight;
+  WPI_VictorSPX talonIntakeLeft;
+  WPI_VictorSPX talonIntakeRight;
   WPI_TalonSRX talonTip;
 
   TankDrive tankDrive;
@@ -65,8 +66,8 @@ public class Robot extends TimedRobot {
 		talonBR = new WPI_TalonSRX(Constants.RIGHT_SLAVE_TALON_ID);
     talonBL = new WPI_TalonSRX(Constants.LEFT_SLAVE_TALON_ID);
     
-    talonIntakeLeft = new WPI_TalonSRX(Constants.TALON_INTAKE_LEFT);
-    talonIntakeRight = new WPI_TalonSRX(Constants.TALON_INTAKE_RIGHT);
+    talonIntakeLeft = new WPI_VictorSPX(Constants.VICTOR_INTAKE_LEFT);
+    talonIntakeRight = new WPI_VictorSPX(Constants.VICTOR_INTAKE_RIGHT);
     talonTip = new WPI_TalonSRX(Constants.TALON_TIP);
 
     tankDrive = new TankDrive(talonFL, talonFR, talonBL, talonBR);
