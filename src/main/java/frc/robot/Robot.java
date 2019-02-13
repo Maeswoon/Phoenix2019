@@ -8,6 +8,7 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -18,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.command.DriveVoltageTime;
 import frc.command.ParkManeuver;
 import frc.command.Teleop;
+import frc.robot.subsystems.BoxManipulator;
 import frc.robot.subsystems.TankDrive;
 import frc.util.Constants;
 
@@ -42,11 +44,17 @@ public class Robot extends TimedRobot {
 	WPI_TalonSRX talonBR;
   WPI_TalonSRX talonBL;
   
+  WPI_VictorSPX talonIntakeLeft;
+  WPI_VictorSPX talonIntakeRight;
+  WPI_TalonSRX talonTip;
+
   TankDrive tankDrive;
 
   public double targetCenterX = 11;
   public double targetDistance = 0;
   public boolean targetFound = true;
+  
+  BoxManipulator manipulator;
   PCMHandler pcm;
 
 
@@ -63,9 +71,14 @@ public class Robot extends TimedRobot {
     talonFR = new WPI_TalonSRX(Constants.RIGHT_MASTER_TALON_ID);
     talonFL = new WPI_TalonSRX(Constants.LEFT_MASTER_TALON_ID);
 		talonBR = new WPI_TalonSRX(Constants.RIGHT_SLAVE_TALON_ID);
-		talonBL = new WPI_TalonSRX(Constants.LEFT_SLAVE_TALON_ID);
-   
+    talonBL = new WPI_TalonSRX(Constants.LEFT_SLAVE_TALON_ID);
+    
+    talonIntakeLeft = new WPI_VictorSPX(Constants.VICTOR_INTAKE_LEFT);
+    talonIntakeRight = new WPI_VictorSPX(Constants.VICTOR_INTAKE_RIGHT);
+    talonTip = new WPI_TalonSRX(Constants.TALON_TIP);
+
     tankDrive = new TankDrive(talonFL, talonFR, talonBL, talonBR);
+    manipulator = new BoxManipulator(talonIntakeRight, talonIntakeLeft, talonTip, pcm);
 
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
@@ -126,7 +139,7 @@ public class Robot extends TimedRobot {
     pcm.turnOn();
     tankDrive.teleopConfig();
 
-    Command teleop = new Teleop(this, tankDrive, driverJoystick, operatorJoystick );
+    Command teleop = new Teleop(this, tankDrive, manipulator, driverJoystick, operatorJoystick);
 		Scheduler.getInstance().add(teleop);
 
 
