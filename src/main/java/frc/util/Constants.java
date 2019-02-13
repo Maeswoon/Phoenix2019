@@ -42,10 +42,10 @@ public class Constants {
 
     public static final double TARGET_CENTERX_MUL = 1;
     public static final double TARGET_DISTANCE_MUL = 1;
-    
+
     public static final int PCM_CAN_ID = 11;
-	public static final int PCM_SLOT_HIGHGEAR = 0;
-    public static final int PCM_SLOT_LOWGEAR = 1;
+	public static final int PCM_SLOT_HIGHGEAR = 4;
+    public static final int PCM_SLOT_LOWGEAR = 5;
 
     
     

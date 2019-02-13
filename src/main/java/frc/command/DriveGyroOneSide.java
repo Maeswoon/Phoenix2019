@@ -8,38 +8,62 @@
 package frc.command;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.Robot;
-import frc.util.Vision;
+import frc.robot.subsystems.TankDrive;
+import frc.util.PIDLoop;
+import frc.robot.Gyro;
 
-public class GetVisionData extends Command {
+public class DriveGyroOneSide extends Command {
 
-  private Robot m_robot;
+  private double angle;
 
-  public GetVisionData(Robot robot) {
-    m_robot = robot;
+  private TankDrive m_tankDrive;
+
+  private String m_side;
+
+  private PIDLoop pidLoop;
+
+  private boolean reached;
+  private long reachedTime;
+
+  public DriveGyroOneSide(TankDrive tankDrive, double angle, String side) {
+    m_tankDrive = tankDrive;
+    this.angle = angle;
+    m_side = side;
+    reached = false;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    m_robot.targetCenterX = 11;//Vision.getHorizontalDistance(); //obviously not actually 94 lol
-    m_robot.targetDistance = 24;//Vision.getVerticalDistance(); //obviously not actually 1248 lol
+    pidLoop = new PIDLoop(1, 0, 0, 20, angle);
+
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    if(m_side.equals("left")) {
+      m_tankDrive.setPercentage(-pidLoop.get(), 0);
+    } else if(m_side.equals("right")) {
+      m_tankDrive.setPercentage(0, -pidLoop.get());
+    }
+
+    if(Math.abs(Gyro.angle() - angle) < 5 && !reached) {
+      reached = true;
+      reachedTime = System.currentTimeMillis();
+    }
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return true;
+    return reached && System.currentTimeMillis() - reachedTime > 400;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    m_tankDrive.setPercentage(0, 0);
   }
 
   // Called when another command which requires one or more of the same

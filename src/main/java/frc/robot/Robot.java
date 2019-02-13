@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.command.DriveVoltageTime;
 import frc.command.ParkManeuver;
 import frc.command.Teleop;
 import frc.robot.subsystems.TankDrive;
@@ -42,14 +43,12 @@ public class Robot extends TimedRobot {
   WPI_TalonSRX talonBL;
   
   TankDrive tankDrive;
-<<<<<<< HEAD
 
-  public double targetCenterX = 0;
+  public double targetCenterX = 11;
   public double targetDistance = 0;
-=======
+  public boolean targetFound = true;
   PCMHandler pcm;
 
->>>>>>> origin/master
 
   /**
    * This function is run when the robot is first started up and should be
@@ -71,6 +70,8 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+
+    Gyro.init();
   }
 
   /**
@@ -136,14 +137,29 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_A)) {
-      Scheduler.getInstance().removeAll();
-      Scheduler.getInstance().add(new ParkManeuver(this, driverJoystick, tankDrive));
-      Scheduler.getInstance().add(new Teleop(this, tankDrive, driverJoystick, operatorJoystick));
+    // if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_A)) {
+    //   //Scheduler.getInstance().removeAll();
+    //   Scheduler.getInstance().add(new ParkManeuver(this, driverJoystick, tankDrive));
+    //   //Scheduler.getInstance().add(new Teleop(this, tankDrive, driverJoystick, operatorJoystick));
+    // }
+
+    // if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_B)) {
+    //   Scheduler.getInstance().add(new DriveVoltageTime(tankDrive, -1));
+    // }
+
+    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_LEFT_BUMPER)) {
+        pcm.setLowGear(false);
+        pcm.setHighGear(true);
+    }
+
+    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_RIGHT_BUMPER)) {
+      pcm.setLowGear(true);
+      pcm.setHighGear(false);
     }
 
     Scheduler.getInstance().run();
     
+    System.out.println("Gyro angle: " + Gyro.subsystem());
 
   }
 
