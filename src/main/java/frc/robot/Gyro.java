@@ -8,6 +8,9 @@ public class Gyro {
 	static ADIS16448_IMU imu;
 	
 	private static double goalAngle;
+	private static double lastAngle;
+	private static double n = 0;
+	private static double average;
 	
 	public static void init(){
 		imu = new ADIS16448_IMU();
@@ -37,6 +40,9 @@ public class Gyro {
 	}
 	
 	public static double angle(){
+		n++;
+		if(n > 1) average += (imu.getAngleX() - lastAngle);
+		lastAngle = imu.getAngleX();
 		return imu.getAngleX();
     }
     
@@ -51,5 +57,9 @@ public class Gyro {
 
 	public static PIDSourceType getPIDSourceType() {
 		return imu.getPIDSourceType();
+	}
+
+	public static double avg() {
+		return average / n;
 	}
 }

@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.command.DriveGyroOneSide;
 import frc.command.DriveVoltageTime;
 import frc.command.ParkManeuver;
 import frc.command.Teleop;
@@ -53,7 +54,7 @@ public class Robot extends TimedRobot {
   public double targetCenterX = 11;
   public double targetDistance = 0;
   public boolean targetFound = true;
-  
+
   BoxManipulator manipulator;
   PCMHandler pcm;
 
@@ -136,13 +137,12 @@ public class Robot extends TimedRobot {
 
 
   public void teleopInit() {
-    pcm.turnOn();
+    //pcm.turnOn();
     tankDrive.teleopConfig();
-
+    //Gyro.calibrate();
     Command teleop = new Teleop(this, tankDrive, manipulator, driverJoystick, operatorJoystick);
 		Scheduler.getInstance().add(teleop);
-
-
+    Gyro.reset();
   } 
   /**
    * This function is called periodically during operator control.
@@ -150,29 +150,50 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-    // if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_A)) {
-    //   //Scheduler.getInstance().removeAll();
-    //   Scheduler.getInstance().add(new ParkManeuver(this, driverJoystick, tankDrive));
-    //   //Scheduler.getInstance().add(new Teleop(this, tankDrive, driverJoystick, operatorJoystick));
-    // }
-
-    // if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_B)) {
-    //   Scheduler.getInstance().add(new DriveVoltageTime(tankDrive, -1));
-    // }
-
-    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_LEFT_BUMPER)) {
-        pcm.setLowGear(false);
-        pcm.setHighGear(true);
+    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_A)) {
+      //Scheduler.getInstance().removeAll();
+      Scheduler.getInstance().add(new ParkManeuver(this, driverJoystick, tankDrive));
+      //Scheduler.getInstance().add(new Teleop(this, tankDrive, driverJoystick, operatorJoystick));
     }
 
-    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_RIGHT_BUMPER)) {
-      pcm.setLowGear(true);
-      pcm.setHighGear(false);
+    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_B)) {
+      Scheduler.getInstance().add(new DriveVoltageTime(tankDrive, -1));
     }
+
+    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_X)) {
+      Scheduler.getInstance().add(new DriveVoltageTime(tankDrive, 1));
+    }
+    
+    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_Y)) {
+      Scheduler.getInstance().add(new DriveGyroOneSide(tankDrive, 20, "right"));
+    }
+
+    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_TWO_WINDOWS)) {
+      Scheduler.getInstance().add(new DriveGyroOneSide(tankDrive, -20, "right"));
+    }
+
+    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_THREE_LINES)) {
+      Gyro.reset();
+    }
+
+
+    // if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_LEFT_BUMPER)) {
+    //     pcm.setLowGear(false);
+    //     pcm.setHighGear(true);
+    // }
+
+    // if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_RIGHT_BUMPER)) {
+    //   pcm.setLowGear(true);
+    //   pcm.setHighGear(false);
+    // }
+
+    // tankDrive.setPercentage(driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y), driverJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_Y));
 
     Scheduler.getInstance().run();
     
-    System.out.println("Gyro angle: " + Gyro.subsystem());
+    //System.out.println("Gyro angle: " + Gyro.angle());
+    SmartDashboard.putString("DB/String 0", String.valueOf(Gyro.angle()));
+    //System.out.println("avg difference: " + Gyro.avg());
 
   }
 

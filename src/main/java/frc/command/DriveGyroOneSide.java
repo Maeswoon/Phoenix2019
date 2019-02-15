@@ -8,9 +8,10 @@
 package frc.command;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Gyro;
 import frc.robot.subsystems.TankDrive;
 import frc.util.PIDLoop;
-import frc.robot.Gyro;
 
 public class DriveGyroOneSide extends Command {
 
@@ -35,8 +36,8 @@ public class DriveGyroOneSide extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    pidLoop = new PIDLoop(1, 0, 0, 20, angle);
-
+    pidLoop = new PIDLoop(SmartDashboard.getNumber("DB/Slider 1",0), SmartDashboard.getNumber("DB/Slider 2", 0), SmartDashboard.getNumber("DB/Slider 3",0), 20, angle);
+    Gyro.reset();
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -48,7 +49,7 @@ public class DriveGyroOneSide extends Command {
       m_tankDrive.setPercentage(0, -pidLoop.get());
     }
 
-    if(Math.abs(Gyro.angle() - angle) < 5 && !reached) {
+    if(Math.abs(Gyro.angle() + angle) < 5 && !reached) {
       reached = true;
       reachedTime = System.currentTimeMillis();
     }
@@ -57,7 +58,7 @@ public class DriveGyroOneSide extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return reached && System.currentTimeMillis() - reachedTime > 400;
+    return reached && System.currentTimeMillis() - reachedTime > 2000;
   }
 
   // Called once after isFinished returns true

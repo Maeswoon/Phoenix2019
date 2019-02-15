@@ -58,7 +58,7 @@ public class PIDLoop {
   }
 
   public double get() {
-    double error = Gyro.angle() - target;
+    double error = -(Gyro.angle() + target) / 360.0;
 
     double p_out = p * error;
 
@@ -71,6 +71,7 @@ public class PIDLoop {
     
     lastError = error;
 
+    System.out.println("Total pid out: " + (p_out + i_out + d_out) + " gyro angle: " + Gyro.angle() + " error: " + error + " p: " + p);
     return p_out + i_out + d_out;
   }
 

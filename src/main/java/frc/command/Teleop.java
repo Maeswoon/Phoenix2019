@@ -11,6 +11,6 @@ public class Teleop extends CommandGroup {
 
     public Teleop(Robot robot, TankDrive tankDrive, BoxManipulator manipulator, Joystick driverJoystick, Joystick operatorJoyStick) {
         addSequential(new Driver(robot,tankDrive,driverJoystick));
-        addParallel(new Operator(robot,operatorJoyStick,manipulator));
+        //addParallel(new Operator(robot,operatorJoyStick,manipulator));
     }
 }
