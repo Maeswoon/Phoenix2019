@@ -137,13 +137,13 @@ public class Robot extends TimedRobot {
     //Drivetrain
     if (Math.abs(driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y)) > 0.1) {
       talonFL.set(ControlMode.Current, driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y));
-      //talonBL.follow(talonFL);
+      talonBL.follow(talonFL);
     }else{
       talonFL.set(ControlMode.Current, 0);
     }
     if (Math.abs(driverJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_Y)) > 0.1) {
       talonFR.set(ControlMode.Current, driverJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_Y));
-      //talonBR.follow(talonFR);
+      talonBR.follow(talonFR);
     }else{
       talonFR.set(ControlMode.Current, 0);
     }
@@ -176,9 +176,9 @@ public class Robot extends TimedRobot {
     if (operatorJoystick.getRawButton(Constants.XBOX_BUTTON_A)) {
       presetPosition = 0;
     } else if (operatorJoystick.getRawButton(Constants.XBOX_BUTTON_B)) {
-      presetPosition = 850;
+      presetPosition = -850;
     } else if (operatorJoystick.getRawButton(Constants.XBOX_BUTTON_Y)) {
-      presetPosition = 1500;
+      presetPosition = -1500;
     }
     if (presetPosition == 0 && manipulator.getPosition() > -200) {
       manipulator.goPercentOutput(0);
