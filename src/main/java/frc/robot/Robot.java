@@ -156,7 +156,7 @@ public class Robot extends TimedRobot {
       pcm.setLowGear(true);
     }
 
-    //Manipulator
+    //Manipulator - XBOX
     if (operatorJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_TRIGGER) > 0.1) {
       manipulator.pushBox(operatorJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_TRIGGER));
     } else if (operatorJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_TRIGGER) > 0.1) {
@@ -180,6 +180,31 @@ public class Robot extends TimedRobot {
     } else if (operatorJoystick.getRawButton(Constants.XBOX_BUTTON_Y)) {
       presetPosition = -1500;
     }
+
+    //Manipulator - LOGITECH
+    // if (operatorJoystick.getRawButton(Constants.LOGITECH_LEFT_TRIGGER)) {
+    //   manipulator.pushBox(0.5);
+    // } else if (operatorJoystick.getRawButton(Constants.LOGITECH_RIGHT_TRIGGER)) {
+    //   manipulator.pushBox(-0.5);
+    // } else {
+    //   manipulator.stop();
+    // }
+
+    // if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_LEFT_BUMPER)) {
+    //   manipulator.openManipulator();
+    // }
+    // if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_RIGHT_BUMPER)) {
+    //   manipulator.closeManipulator();
+    // }
+
+
+    // if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_A)) {
+    //   presetPosition = 0;
+    // } else if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_B)) {
+    //   presetPosition = -850;
+    // } else if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_Y)) {
+    //   presetPosition = -1500;
+    // }
     if (presetPosition == 0 && manipulator.getPosition() > -200) {
       manipulator.goPercentOutput(0);
     } else {
