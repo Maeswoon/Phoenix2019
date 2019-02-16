@@ -196,7 +196,7 @@ public class Robot extends TimedRobot {
     } else if (Math.abs(operatorJoystick.getRawAxis(3)) > 0.1) {
          manipulator.pushBox(operatorJoystick.getRawAxis(3));
     }else {
-      manipulator.stop();
+      manipulator.pushBox(0.25);
     }
 
 
