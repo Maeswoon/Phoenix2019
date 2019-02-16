@@ -167,14 +167,13 @@ public class Robot extends TimedRobot {
     if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_Y)) {
       Scheduler.getInstance().add(new DriveGyroOneSide(tankDrive, 20, "right"));
     }
-
     if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_TWO_WINDOWS)) {
       Scheduler.getInstance().add(new DriveGyroOneSide(tankDrive, -20, "right"));
     }
 
-    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_THREE_LINES)) {
-      Gyro.reset();
-    }
+    // if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_THREE_LINES)) {
+    //   Gyro.reset();
+    // }
 
 
     // if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_LEFT_BUMPER)) {

@@ -20,10 +20,12 @@ public class PIDLoop {
 
   private double target;
 
+  private double izone;
+
   private double accum;
   private double lastError = -9999;
 
-  public PIDLoop(double p, double i, double d, double dt, double target) {
+  public PIDLoop(double p, double i, double d, double izone, double dt, double target) {
     this.p = p;
     this.i = i;
     this.d = d;
@@ -31,6 +33,7 @@ public class PIDLoop {
     this.target = target;
 
     this.accum = 0;
+    this.izone = -1;
   }
 
   public double getP() {
@@ -63,6 +66,7 @@ public class PIDLoop {
     double p_out = p * error;
 
     accum += error * dt;
+    if(izone > 0 && Math.abs(accum) > izone) accum = 0;
     double i_out = i * accum;
 
     double d_out = 0;
