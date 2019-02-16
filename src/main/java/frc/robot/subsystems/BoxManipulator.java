@@ -32,21 +32,24 @@ public class BoxManipulator extends Subsystem {
 		this.talonIntakeLeft = talonIntakeLeft;
 		this.talonTip = talonTip;
 		
-		talonIntakeRight.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PidLoopIndex, PidTimeOutMs);
-		talonIntakeRight.setSensorPhase(SensorPhase);
-		talonIntakeRight.setInverted(InvertMotor);
-		talonIntakeRight.configNominalOutputForward(0, PidTimeOutMs);
-		talonIntakeRight.configNominalOutputReverse(0, PidTimeOutMs);
-		talonIntakeRight.configPeakOutputForward(1, PidTimeOutMs);
-		talonIntakeRight.configPeakOutputReverse(-1, PidTimeOutMs);
-		talonIntakeRight.configAllowableClosedloopError(0, PidLoopIndex, PidTimeOutMs);
+		talonTip.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PidLoopIndex, PidTimeOutMs);
+		talonTip.setSensorPhase(SensorPhase);
+		talonTip.setInverted(InvertMotor);
+		talonTip.configNominalOutputForward(0, PidTimeOutMs);
+		talonTip.configNominalOutputReverse(0, PidTimeOutMs);
+		talonTip.configPeakOutputForward(1, PidTimeOutMs);
+		talonTip.configPeakOutputReverse(-1, PidTimeOutMs);
+		talonTip.configAllowableClosedloopError(0, PidLoopIndex, PidTimeOutMs);
 		
-		talonIntakeRight.config_kF(PidLoopIndex, 0.0, PidTimeOutMs);
-		talonIntakeRight.config_kP(PidLoopIndex, 0.1, PidTimeOutMs);
-		talonIntakeRight.config_kI(PidLoopIndex, 0.0, PidTimeOutMs);
-		talonIntakeRight.config_kD(PidLoopIndex, 0.0, PidTimeOutMs);
+		talonTip.config_kF(PidLoopIndex, 0.0, PidTimeOutMs);
+		talonTip.config_kP(PidLoopIndex, 1.0, PidTimeOutMs);
+		talonTip.config_kI(PidLoopIndex, 0.0, PidTimeOutMs);
+		talonTip.config_kD(PidLoopIndex, 0.0, PidTimeOutMs);
 		
 		this.talonIntakeLeft.follow(this.talonIntakeRight);
+
+		//set pid for talon tip
+		
 		//Need equivalent for solenoids
 		this.pcm = pcm;
 		
@@ -70,6 +73,14 @@ public class BoxManipulator extends Subsystem {
 	
 	public void goToPosition(double position) {
 		talonTip.set(ControlMode.Position, position);
+	}
+
+	public void goPercentOutput(double percent){
+		talonTip.set(ControlMode.PercentOutput, percent);
+	}
+
+	public double getPosition(){
+		return talonTip.getSelectedSensorPosition();
 	}
 	
 	public void pullBox() {
