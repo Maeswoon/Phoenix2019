@@ -11,7 +11,7 @@ import frc.command.Operator;
 public class Teleop extends CommandGroup {
 
     public Teleop(TankDrive tankDrive, BoxManipulator manipulator, Joystick driverJoystick, Joystick operatorJoyStick) {
-        //addSequential(new Driver(tankDrive,driverJoystick));
+        addSequential(new Driver(tankDrive,driverJoystick));
         addSequential(new Operator(operatorJoyStick, manipulator));
     }
 }

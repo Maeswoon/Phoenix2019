@@ -78,7 +78,7 @@ public class TankDrive extends Subsystem {
     }
 
     public void setPercentage(double left,double right) {
-
+        
 		talonFL.set(ControlMode.PercentOutput, left);
         talonFR.set(ControlMode.PercentOutput, right);
         talonBL.follow(talonFL);

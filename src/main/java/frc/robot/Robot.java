@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
@@ -130,8 +131,7 @@ public class Robot extends TimedRobot {
     pcm.turnOn();
     tankDrive.teleopConfig();
 
-    Command teleop = new Teleop(tankDrive, manipulator, driverJoystick, operatorJoystick);
-		Scheduler.getInstance().add(teleop);
+    
 
 
   } 
@@ -141,7 +141,42 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-    Scheduler.getInstance().run();
+    //Drivetrain
+    if (Math.abs(driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y)) > 0.1) {
+        talonFL.set(ControlMode.Current, driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y));
+        talonBL.follow(talonFL);
+    }
+    if (Math.abs(driverJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_Y)) > 0.1) {
+      talonFR.set(ControlMode.Current, driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y));
+      talonBR.follow(talonFR);
+    }
+
+    //Manipulator
+    if (operatorJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_TRIGGER) > 0.1) {
+      manipulator.pushBox(operatorJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_TRIGGER));
+    } else if (operatorJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_TRIGGER) > 0.1) {
+      manipulator.pushBox(-operatorJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_TRIGGER));
+    } else {
+      manipulator.stop();
+    }
+
+    if (operatorJoystick.getRawButton(Constants.XBOX_BUTTON_LEFT_BUMPER)) {
+      manipulator.openManipulator();
+    }
+    if (operatorJoystick.getRawButton(Constants.XBOX_BUTTON_RIGHT_BUMPER)) {
+      manipulator.closeManipulator();
+    }
+
+    if (Math.abs(operatorJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y)) > 0.1) {
+      manipulator.goPercentOutput(operatorJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y));
+
+    }
+
+
+    
+  
+
+    
 
   }
 
