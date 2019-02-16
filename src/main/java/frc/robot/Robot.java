@@ -52,6 +52,8 @@ public class Robot extends TimedRobot {
   PCMHandler pcm;
 
   CameraControl cameras;
+
+  int presetPosition;
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -105,10 +107,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
-    // autoSelected = SmartDashboard.getString("Auto Selector",
-    // defaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
+    teleopInit();
   }
 
   /**
@@ -116,15 +115,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
-        break;
-      case kDefaultAuto:
-      default:
-        // Put default auto code here
-        break;
-    }
+    teleopPeriodic();
   }
 
 
@@ -132,6 +123,7 @@ public class Robot extends TimedRobot {
     pcm.turnOn();
     tankDrive.teleopConfig();
 
+    presetPosition = 0;
     
 
 
@@ -180,9 +172,18 @@ public class Robot extends TimedRobot {
       manipulator.closeManipulator();
     }
 
-    if (Math.abs(operatorJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y)) > 0.1) {
-      manipulator.goPercentOutput(operatorJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y));
 
+    if (operatorJoystick.getRawButton(Constants.XBOX_BUTTON_A)) {
+      presetPosition = 0;
+    } else if (operatorJoystick.getRawButton(Constants.XBOX_BUTTON_B)) {
+      presetPosition = 850;
+    } else if (operatorJoystick.getRawButton(Constants.XBOX_BUTTON_Y)) {
+      presetPosition = 1500;
+    }
+    if (presetPosition == 0 && manipulator.getPosition() > -200) {
+      manipulator.goPercentOutput(0);
+    } else {
+      manipulator.goToPosition(presetPosition);
     }
 
 

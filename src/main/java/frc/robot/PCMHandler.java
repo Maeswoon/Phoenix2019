@@ -48,12 +48,12 @@ public class PCMHandler {
 	}
 
 	public void openManipulator() {
-		clawSolLeft.set(true);
+		clawSolLeft.set(false);
 		clawSolRight.set(true);
 	}
 
 	public void closeManipulator() {
-		clawSolLeft.set(false);
+		clawSolLeft.set(true);
 		clawSolRight.set(false);
 	}
 
