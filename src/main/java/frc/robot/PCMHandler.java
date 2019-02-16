@@ -12,6 +12,9 @@ public class PCMHandler {
 	Solenoid lowgearSol; 
 	Solenoid clawSolRight;
 	Solenoid clawSolLeft;
+
+	Solenoid clawSolRight2;
+	Solenoid clawSolLeft2;
 	
     
 	public PCMHandler(int port) {
@@ -23,6 +26,9 @@ public class PCMHandler {
 		lowgearSol = new Solenoid(Constants.PCM_CAN_ID, Constants.PCM_SLOT_LOWGEAR);
 		clawSolRight = new Solenoid(Constants.PCM_CAN_ID,Constants.PCM_BOX_MANIPULATOR_RIGHT);
 		clawSolLeft = new Solenoid(Constants.PCM_CAN_ID,Constants.PCM_BOX_MANIPULATOR_LEFT);
+
+		clawSolRight2 = new Solenoid(Constants.PCM_CAN_ID,1);
+		clawSolLeft2 = new Solenoid(Constants.PCM_CAN_ID,0);
 
 	}
 	
@@ -48,13 +54,17 @@ public class PCMHandler {
 	}
 
 	public void openManipulator() {
-		clawSolLeft.set(false);
-		clawSolRight.set(true);
+		clawSolLeft.set(true);
+		clawSolRight.set(false);
+		clawSolLeft2.set(false);
+		clawSolRight2.set(true);
 	}
 
 	public void closeManipulator() {
-		clawSolLeft.set(true);
-		clawSolRight.set(false);
+		clawSolLeft.set(false);
+		clawSolRight.set(true);
+		clawSolLeft2.set(true);
+		clawSolRight2.set(false);
 	}
 
 

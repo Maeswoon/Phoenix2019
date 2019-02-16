@@ -54,6 +54,8 @@ public class Robot extends TimedRobot {
   CameraControl cameras;
 
   int presetPosition;
+
+  boolean start = false;
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -136,17 +138,22 @@ public class Robot extends TimedRobot {
 
     //Drivetrain
     if (Math.abs(driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y)) > 0.1) {
-      talonFL.set(ControlMode.Current, driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y));
-      talonBL.follow(talonFL);
+      talonFR.set(ControlMode.PercentOutput, -driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y));
+      
     }else{
-      talonFL.set(ControlMode.Current, 0);
+      talonFR.set(ControlMode.PercentOutput, 0);
     }
     if (Math.abs(driverJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_Y)) > 0.1) {
-      talonFR.set(ControlMode.Current, driverJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_Y));
-      talonBR.follow(talonFR);
+      talonFL.set(ControlMode.PercentOutput, -driverJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_Y));
+      
     }else{
-      talonFR.set(ControlMode.Current, 0);
+      talonFL.set(ControlMode.PercentOutput, 0);
     }
+
+    talonBL.follow(talonFL);
+    talonBR.follow(talonFR);
+
+    //tankDrive.setPercentage(driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y),driverJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_Y));
 
     if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_LEFT_BUMPER)){
       pcm.setLowGear(false);
@@ -156,60 +163,77 @@ public class Robot extends TimedRobot {
       pcm.setLowGear(true);
     }
 
-    //Manipulator - XBOX
-    if (operatorJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_TRIGGER) > 0.1) {
-      manipulator.pushBox(operatorJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_TRIGGER));
-    } else if (operatorJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_TRIGGER) > 0.1) {
-      manipulator.pushBox(-operatorJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_TRIGGER));
-    } else {
-      manipulator.stop();
-    }
-
-    if (operatorJoystick.getRawButton(Constants.XBOX_BUTTON_LEFT_BUMPER)) {
-      manipulator.openManipulator();
-    }
-    if (operatorJoystick.getRawButton(Constants.XBOX_BUTTON_RIGHT_BUMPER)) {
-      manipulator.closeManipulator();
-    }
-
-
-    if (operatorJoystick.getRawButton(Constants.XBOX_BUTTON_A)) {
-      presetPosition = 0;
-    } else if (operatorJoystick.getRawButton(Constants.XBOX_BUTTON_B)) {
-      presetPosition = -850;
-    } else if (operatorJoystick.getRawButton(Constants.XBOX_BUTTON_Y)) {
-      presetPosition = -1500;
-    }
-
-    //Manipulator - LOGITECH
-    // if (operatorJoystick.getRawButton(Constants.LOGITECH_LEFT_TRIGGER)) {
-    //   manipulator.pushBox(0.5);
-    // } else if (operatorJoystick.getRawButton(Constants.LOGITECH_RIGHT_TRIGGER)) {
-    //   manipulator.pushBox(-0.5);
+    // //Manipulator - XBOX
+    // if (operatorJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_TRIGGER) > 0.1) {
+    //   manipulator.pushBox(operatorJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_TRIGGER));
+    // } else if (operatorJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_TRIGGER) > 0.1) {
+    //   manipulator.pushBox(-operatorJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_TRIGGER));
     // } else {
     //   manipulator.stop();
     // }
 
-    // if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_LEFT_BUMPER)) {
+    // if (operatorJoystick.getRawButton(Constants.XBOX_BUTTON_LEFT_BUMPER)) {
     //   manipulator.openManipulator();
     // }
-    // if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_RIGHT_BUMPER)) {
+    // if (operatorJoystick.getRawButton(Constants.XBOX_BUTTON_RIGHT_BUMPER)) {
     //   manipulator.closeManipulator();
     // }
 
 
-    // if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_A)) {
+    // if (operatorJoystick.getRawButton(Constants.XBOX_BUTTON_A)) {
     //   presetPosition = 0;
-    // } else if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_B)) {
+    // } else if (operatorJoystick.getRawButton(Constants.XBOX_BUTTON_B)) {
     //   presetPosition = -850;
-    // } else if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_Y)) {
+    // } else if (operatorJoystick.getRawButton(Constants.XBOX_BUTTON_Y)) {
     //   presetPosition = -1500;
     // }
-    if (presetPosition == 0 && manipulator.getPosition() > -200) {
-      manipulator.goPercentOutput(0);
-    } else {
-      manipulator.goToPosition(presetPosition);
+
+    //Manipulator - LOGITECH
+    if (operatorJoystick.getRawButton(Constants.LOGITECH_LEFT_TRIGGER)) {
+      manipulator.pushBox(0.5);
+    } else if (operatorJoystick.getRawButton(Constants.LOGITECH_RIGHT_TRIGGER)) {
+      manipulator.pushBox(-0.5);
+    } else if (Math.abs(operatorJoystick.getRawAxis(3)) > 0.1) {
+         manipulator.pushBox(operatorJoystick.getRawAxis(3));
+    }else {
+      manipulator.stop();
     }
+
+
+    if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_LEFT_BUMPER)) {
+      manipulator.openManipulator();
+    }
+    if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_RIGHT_BUMPER)) {
+      manipulator.closeManipulator();
+    }
+
+
+    // if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_A)) {
+    //   presetPosition = 2100;
+    // } else if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_B)) {
+    //   presetPosition = 1000;
+    // } else if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_Y)) {
+    //   presetPosition = 0;
+    // }
+
+    // if (presetPosition == 2100 && manipulator.getPosition() > 1900) {
+    //   manipulator.goPercentOutput(0);
+    // } else if (presetPosition == 0 && manipulator.getPosition() < 100) {
+    //   manipulator.goPercentOutput(0);
+    // } else {
+    //   manipulator.goToPosition(presetPosition);
+    // }
+    if (Math.abs(operatorJoystick.getRawAxis(1)) > 0.05) {
+      manipulator.goPercentOutput(operatorJoystick.getRawAxis(1) * 0.8);
+    } 
+    // if (!start) {
+    //   manipulator.goPercentOutput(0.5);
+    //   start = true;
+    // } else {
+    //   manipulator.goPercentOutput(0);
+    // }
+
+    
 
 
     

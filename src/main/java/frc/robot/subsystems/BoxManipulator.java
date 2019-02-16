@@ -46,6 +46,11 @@ public class BoxManipulator extends Subsystem {
 		talonTip.config_kI(PidLoopIndex, 0.0, PidTimeOutMs);
 		talonTip.config_kD(PidLoopIndex, 0.0, PidTimeOutMs);
 		
+		talonTip.config_kF(1, 0.0, PidTimeOutMs);
+		talonTip.config_kP(1, 1.0, PidTimeOutMs);
+		talonTip.config_kI(1, 0.0, PidTimeOutMs);
+		talonTip.config_kD(1, 0.0, PidTimeOutMs);
+		
 		this.talonIntakeLeft.follow(this.talonIntakeRight);
 
 		//set pid for talon tip
