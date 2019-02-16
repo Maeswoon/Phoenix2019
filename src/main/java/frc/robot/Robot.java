@@ -21,7 +21,7 @@ import frc.robot.subsystems.BoxManipulator;
 import frc.robot.subsystems.TankDrive;
 import frc.util.Constants;
 import frc.command.Teleop;
-
+import frc.util.CameraControl;
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
@@ -51,7 +51,7 @@ public class Robot extends TimedRobot {
   BoxManipulator manipulator;
   PCMHandler pcm;
 
-
+  CameraControl cameras;
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -77,6 +77,7 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+    cameras = new CameraControl(320, 240, 15);
   }
 
   /**
