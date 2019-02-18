@@ -54,8 +54,10 @@ public class Robot extends TimedRobot {
   CameraControl cameras;
 
   int presetPosition;
+  boolean preset;
 
   boolean start = false;
+  int currentCamera = 0;
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -124,8 +126,9 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     pcm.turnOn();
     tankDrive.teleopConfig();
-
+    currentCamera = 0;
     presetPosition = 0;
+    preset = false;
     
 
 
@@ -135,6 +138,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    //Switching Camera
+    if (driverJoystick.getRawButton(Constants.XBOX_BUTTON_TWO_WINDOWS)) {
+      cameras.switchCamera();
+    }
 
     //Drivetrain
     if (Math.abs(driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y)) > 0.1) {
@@ -194,9 +201,9 @@ public class Robot extends TimedRobot {
     } else if (operatorJoystick.getRawButton(Constants.LOGITECH_RIGHT_TRIGGER)) {
       manipulator.pushBox(-0.5);
     } else if (Math.abs(operatorJoystick.getRawAxis(3)) > 0.1) {
-         manipulator.pushBox(operatorJoystick.getRawAxis(3));
+         manipulator.pushBox(operatorJoystick.getRawAxis(3) * 0.5);
     }else {
-      manipulator.pushBox(0.25);
+      manipulator.pushBox(-0.05);
     }
 
 
@@ -206,26 +213,45 @@ public class Robot extends TimedRobot {
     if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_RIGHT_BUMPER)) {
       manipulator.closeManipulator();
     }
+    SmartDashboard.putString("DB/String 0", "" +talonTip.getSelectedSensorPosition());
+    SmartDashboard.putString("DB/String 1", "" + presetPosition);
 
-
-    // if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_A)) {
-    //   presetPosition = 2100;
-    // } else if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_B)) {
-    //   presetPosition = 1000;
-    // } else if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_Y)) {
-    //   presetPosition = 0;
-    // }
-
-    // if (presetPosition == 2100 && manipulator.getPosition() > 1900) {
-    //   manipulator.goPercentOutput(0);
-    // } else if (presetPosition == 0 && manipulator.getPosition() < 100) {
-    //   manipulator.goPercentOutput(0);
-    // } else {
-    //   manipulator.goToPosition(presetPosition);
-    // }
-    if (Math.abs(operatorJoystick.getRawAxis(1)) > 0.05) {
-      manipulator.goPercentOutput(operatorJoystick.getRawAxis(1) * 0.8);
+    if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_A)) {
+      presetPosition = 2100;
+      preset = true;
+    } else if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_B)) {
+      presetPosition = 1500;
+      preset = true;
+    } else if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_Y)) {
+      presetPosition = 1000;
+      preset = true;
     } 
+     else if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_X)) {
+      presetPosition = 500;
+      preset = true;
+    }
+
+    if (Math.abs(operatorJoystick.getRawAxis(1)) > 0.05) {
+      preset = false;
+      manipulator.goPercentOutput(operatorJoystick.getRawAxis(1) * 0.8);
+      
+    }
+    // else if (presetPosition == 2100 && manipulator.getPosition() > 1900 && preset) {
+    //    manipulator.goPercentOutput(0);
+    // } 
+    // else if (presetPosition == 0 && manipulator.getPosition() < 200 && preset)  {
+    //   manipulator.goPercentOutput(0); 
+    // } else if (preset) {
+    //  SmartDashboard.putString("DB/String 3", "GOING TO POSITION" );
+    //   manipulator.goToPosition(presetPosition);
+    
+     else {
+      manipulator.goPercentOutput(0);
+    }
+ 
+    
+
+    
     // if (!start) {
     //   manipulator.goPercentOutput(0.5);
     //   start = true;
