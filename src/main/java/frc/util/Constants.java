@@ -52,7 +52,13 @@ public class Constants {
     public static final int PCM_CAN_ID = 11;
 	public static final int PCM_SLOT_HIGHGEAR = 4;
     public static final int PCM_SLOT_LOWGEAR = 5;
-    public static final int PCM_BOX_MANIPULATOR_LEFT = 6;
-    public static final int PCM_BOX_MANIPULATOR_RIGHT = 7;
+
+    public static final int PCM_BOX_MANIPULATOR_LEFT = 0;
+    public static final int PCM_BOX_MANIPULATOR_LEFT2 = 1;
+
+    public static final int PCM_BOX_MANIPULATOR_RIGHT = 2;
+    public static final int PCM_BOX_MANIPULATOR_RIGHT2 = 6;
+
+    public static final int PCM_HATCH_MANIP = 7;
     
 }
