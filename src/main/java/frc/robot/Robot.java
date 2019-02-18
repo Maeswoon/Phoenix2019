@@ -141,7 +141,7 @@ public class Robot extends TimedRobot {
     tankDrive.teleopConfig();
     //Gyro.calibrate();
     Command teleop = new Teleop(this, tankDrive, manipulator, driverJoystick, operatorJoystick);
-		Scheduler.getInstance().add(teleop);
+		//Scheduler.getInstance().add(teleop);
     Gyro.reset();
   } 
   /**
@@ -165,7 +165,8 @@ public class Robot extends TimedRobot {
     }
     
     if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_Y)) {
-      Scheduler.getInstance().add(new DriveGyroOneSide(tankDrive, 20, "right"));
+      Scheduler.getInstance().add(new DriveGyroOneSide(tankDrive, 20, "left"));
+      //Scheduler.getInstance().add(new DriveGyroOneSide(tankDrive, 20, "left"));
     }
     if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_TWO_WINDOWS)) {
       Scheduler.getInstance().add(new DriveGyroOneSide(tankDrive, -20, "right"));

@@ -25,7 +25,7 @@ public class PIDLoop {
   private double accum;
   private double lastError = -9999;
 
-  public PIDLoop(double p, double i, double d, double izone, double dt, double target) {
+  public PIDLoop(double p, double i, double d, double dt, double target) {
     this.p = p;
     this.i = i;
     this.d = d;

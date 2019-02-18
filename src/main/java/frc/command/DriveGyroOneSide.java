@@ -36,6 +36,7 @@ public class DriveGyroOneSide extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    m_tankDrive.zeroEncoders();
     pidLoop = new PIDLoop(SmartDashboard.getNumber("DB/Slider 1",0), SmartDashboard.getNumber("DB/Slider 2", 0), SmartDashboard.getNumber("DB/Slider 3",0), 20, angle);
     Gyro.reset();
   }
