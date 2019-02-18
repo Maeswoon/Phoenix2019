@@ -141,7 +141,15 @@ public class Robot extends TimedRobot {
 
     presetPosition = 0;
     
+    talonTip.config_kF(0, SmartDashboard.getNumber("DB/Slider 0",0), 10);
+		talonTip.config_kP(0, SmartDashboard.getNumber("DB/Slider 1",0), 10);
+		talonTip.config_kI(0, SmartDashboard.getNumber("DB/Slider 2",0), 10);
+		talonTip.config_kD(0, SmartDashboard.getNumber("DB/Slider 3",0), 10);
 
+		talonTip.config_kF(1, SmartDashboard.getNumber("DB/Slider 0",0), 10);
+		talonTip.config_kP(1, SmartDashboard.getNumber("DB/Slider 1",0), 10);
+		talonTip.config_kI(1, SmartDashboard.getNumber("DB/Slider 2",0), 10);
+		talonTip.config_kD(1, SmartDashboard.getNumber("DB/Slider 3",0), 10);
 
   } 
   /**
@@ -254,7 +262,7 @@ public class Robot extends TimedRobot {
     } else if (Math.abs(operatorJoystick.getRawAxis(3)) > 0.1) {
          manipulator.pushBox(operatorJoystick.getRawAxis(3));
     }else {
-      manipulator.pushBox(0.25);
+      manipulator.pushBox(-0.1);
     }
 
 
@@ -265,24 +273,23 @@ public class Robot extends TimedRobot {
       manipulator.closeManipulator();
     }
 
-
-    // if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_A)) {
-    //   presetPosition = 2100;
-    // } else if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_B)) {
-    //   presetPosition = 1000;
-    // } else if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_Y)) {
-    //   presetPosition = 0;
-    // }
-
-    // if (presetPosition == 2100 && manipulator.getPosition() > 1900) {
-    //   manipulator.goPercentOutput(0);
-    // } else if (presetPosition == 0 && manipulator.getPosition() < 100) {
-    //   manipulator.goPercentOutput(0);
-    // } else {
-    //   manipulator.goToPosition(presetPosition);
-    // }
+    if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_A)) {
+      presetPosition = 2100;
+    } else if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_B)) {
+      presetPosition = 1000;
+    } else if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_Y)) {
+      presetPosition = 0;
+    }
+    System.out.println("presetPosition: " + presetPosition);
+    if (presetPosition == 2100 && manipulator.getPosition() > 1900) {
+      manipulator.goPercentOutput(0);
+    } else if (presetPosition == 0 && manipulator.getPosition() < 100) {
+      manipulator.goPercentOutput(0);
+    } else {
+      manipulator.goToPosition(presetPosition);
+    }
     if (Math.abs(operatorJoystick.getRawAxis(1)) > 0.05) {
-      manipulator.goPercentOutput(operatorJoystick.getRawAxis(1) * 0.8);
+      //manipulator.goPercentOutput(operatorJoystick.getRawAxis(1) * 0.8);
     } 
     // if (!start) {
     //   manipulator.goPercentOutput(0.5);
