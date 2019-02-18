@@ -10,9 +10,13 @@ public class PCMHandler {
 	Compressor compressor; 
 	Solenoid highgearSol;
 	Solenoid lowgearSol; 
-	Solenoid clawSolLeft;
 	Solenoid clawSolRight;
+	Solenoid clawSolLeft;
 
+	Solenoid clawSolRight2;
+	Solenoid clawSolLeft2;
+	
+    
 	public PCMHandler(int port) {
 		
 		compressor = new Compressor(port);
@@ -20,8 +24,12 @@ public class PCMHandler {
 		
 		highgearSol = new Solenoid(Constants.PCM_CAN_ID, Constants.PCM_SLOT_HIGHGEAR);
 		lowgearSol = new Solenoid(Constants.PCM_CAN_ID, Constants.PCM_SLOT_LOWGEAR);
-		clawSolLeft = new Solenoid(Constants.PCM_CAN_ID, Constants.PCM_BOX_MANIPULATOR_LEFT);
-		clawSolRight = new Solenoid(Constants.PCM_CAN_ID, Constants.PCM_BOX_MANIPULATOR_RIGHT);
+		clawSolRight = new Solenoid(Constants.PCM_CAN_ID,Constants.PCM_BOX_MANIPULATOR_RIGHT);
+		clawSolLeft = new Solenoid(Constants.PCM_CAN_ID,Constants.PCM_BOX_MANIPULATOR_LEFT);
+
+		clawSolRight2 = new Solenoid(Constants.PCM_CAN_ID,1);
+		clawSolLeft2 = new Solenoid(Constants.PCM_CAN_ID,0);
+
 	}
 	
 	public void turnOn(){
@@ -44,15 +52,25 @@ public class PCMHandler {
 	public double getCurrent (){
 		return compressor.getCompressorCurrent();
 	}
-	
+
 	public void openManipulator() {
-		clawSolRight.set(false);
-		clawSolLeft.set(false);
-	}
-	
-	public void closeManipulator() {
 		clawSolLeft.set(true);
-		clawSolRight.set(true);
+		clawSolRight.set(false);
+		clawSolLeft2.set(false);
+		clawSolRight2.set(true);
 	}
+
+	public void closeManipulator() {
+		clawSolLeft.set(false);
+		clawSolRight.set(true);
+		clawSolLeft2.set(true);
+		clawSolRight2.set(false);
+	}
+
+
+	
+	
+
+
 	
 }

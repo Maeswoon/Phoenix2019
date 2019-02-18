@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
@@ -22,8 +23,8 @@ import frc.command.ParkManeuver;
 import frc.command.Teleop;
 import frc.robot.subsystems.BoxManipulator;
 import frc.robot.subsystems.TankDrive;
+import frc.util.CameraControl;
 import frc.util.Constants;
-
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
@@ -58,7 +59,11 @@ public class Robot extends TimedRobot {
   BoxManipulator manipulator;
   PCMHandler pcm;
 
+  CameraControl cameras;
 
+  int presetPosition;
+
+  boolean start = false;
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -86,6 +91,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Auto choices", m_chooser);
 
     Gyro.init();
+    cameras = new CameraControl(320, 240, 15);
   }
 
   /**
@@ -113,10 +119,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
-    // autoSelected = SmartDashboard.getString("Auto Selector",
-    // defaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
+    teleopInit();
   }
 
   /**
@@ -124,15 +127,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
-        break;
-      case kDefaultAuto:
-      default:
-        // Put default auto code here
-        break;
-    }
+    teleopPeriodic();
   }
 
 
@@ -143,6 +138,11 @@ public class Robot extends TimedRobot {
     Command teleop = new Teleop(this, tankDrive, manipulator, driverJoystick, operatorJoystick);
 		//Scheduler.getInstance().add(teleop);
     Gyro.reset();
+
+    presetPosition = 0;
+    
+
+
   } 
   /**
    * This function is called periodically during operator control.
@@ -194,6 +194,110 @@ public class Robot extends TimedRobot {
     //System.out.println("Gyro angle: " + Gyro.angle());
     SmartDashboard.putString("DB/String 0", String.valueOf(Gyro.angle()));
     //System.out.println("avg difference: " + Gyro.avg());
+    //Drivetrain
+    if (Math.abs(driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y)) > 0.1) {
+      talonFR.set(ControlMode.PercentOutput, -driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y));
+      
+    }else{
+      talonFR.set(ControlMode.PercentOutput, 0);
+    }
+    if (Math.abs(driverJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_Y)) > 0.1) {
+      talonFL.set(ControlMode.PercentOutput, -driverJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_Y));
+      
+    }else{
+      talonFL.set(ControlMode.PercentOutput, 0);
+    }
+
+    talonBL.follow(talonFL);
+    talonBR.follow(talonFR);
+
+    //tankDrive.setPercentage(driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y),driverJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_Y));
+
+    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_LEFT_BUMPER)){
+      pcm.setLowGear(false);
+      pcm.setHighGear(true);
+    }else if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_RIGHT_BUMPER)){
+      pcm.setHighGear(false);
+      pcm.setLowGear(true);
+    }
+
+    // //Manipulator - XBOX
+    // if (operatorJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_TRIGGER) > 0.1) {
+    //   manipulator.pushBox(operatorJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_TRIGGER));
+    // } else if (operatorJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_TRIGGER) > 0.1) {
+    //   manipulator.pushBox(-operatorJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_TRIGGER));
+    // } else {
+    //   manipulator.stop();
+    // }
+
+    // if (operatorJoystick.getRawButton(Constants.XBOX_BUTTON_LEFT_BUMPER)) {
+    //   manipulator.openManipulator();
+    // }
+    // if (operatorJoystick.getRawButton(Constants.XBOX_BUTTON_RIGHT_BUMPER)) {
+    //   manipulator.closeManipulator();
+    // }
+
+
+    // if (operatorJoystick.getRawButton(Constants.XBOX_BUTTON_A)) {
+    //   presetPosition = 0;
+    // } else if (operatorJoystick.getRawButton(Constants.XBOX_BUTTON_B)) {
+    //   presetPosition = -850;
+    // } else if (operatorJoystick.getRawButton(Constants.XBOX_BUTTON_Y)) {
+    //   presetPosition = -1500;
+    // }
+
+    //Manipulator - LOGITECH
+    if (operatorJoystick.getRawButton(Constants.LOGITECH_LEFT_TRIGGER)) {
+      manipulator.pushBox(0.5);
+    } else if (operatorJoystick.getRawButton(Constants.LOGITECH_RIGHT_TRIGGER)) {
+      manipulator.pushBox(-0.5);
+    } else if (Math.abs(operatorJoystick.getRawAxis(3)) > 0.1) {
+         manipulator.pushBox(operatorJoystick.getRawAxis(3));
+    }else {
+      manipulator.pushBox(0.25);
+    }
+
+
+    if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_LEFT_BUMPER)) {
+      manipulator.openManipulator();
+    }
+    if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_RIGHT_BUMPER)) {
+      manipulator.closeManipulator();
+    }
+
+
+    // if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_A)) {
+    //   presetPosition = 2100;
+    // } else if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_B)) {
+    //   presetPosition = 1000;
+    // } else if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_Y)) {
+    //   presetPosition = 0;
+    // }
+
+    // if (presetPosition == 2100 && manipulator.getPosition() > 1900) {
+    //   manipulator.goPercentOutput(0);
+    // } else if (presetPosition == 0 && manipulator.getPosition() < 100) {
+    //   manipulator.goPercentOutput(0);
+    // } else {
+    //   manipulator.goToPosition(presetPosition);
+    // }
+    if (Math.abs(operatorJoystick.getRawAxis(1)) > 0.05) {
+      manipulator.goPercentOutput(operatorJoystick.getRawAxis(1) * 0.8);
+    } 
+    // if (!start) {
+    //   manipulator.goPercentOutput(0.5);
+    //   start = true;
+    // } else {
+    //   manipulator.goPercentOutput(0);
+    // }
+
+    
+
+
+    
+  
+
+    
 
   }
 

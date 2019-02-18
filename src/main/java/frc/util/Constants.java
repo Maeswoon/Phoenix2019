@@ -35,6 +35,7 @@ public class Constants {
 
     public static final int XBOX_BUTTON_LEFT_BUMPER = 5;
     public static final int XBOX_BUTTON_RIGHT_BUMPER = 6;
+    
 
     public static final int XBOX_BUTTON_TWO_WINDOWS = 7;
     public static final int XBOX_BUTTON_THREE_LINES = 8;
@@ -48,6 +49,17 @@ public class Constants {
     public static final double TARGET_CENTERX_MUL = 1;
     public static final double TARGET_DISTANCE_MUL = 1;
     
+    public static final int LOGITECH_RIGHT_TRIGGER = 8;
+    public static final int LOGITECH_LEFT_TRIGGER = 7;
+
+    public static final int LOGITECH_BUTTON_A = 2;
+    public static final int LOGITECH_BUTTON_B = 3;
+    public static final int LOGITECH_BUTTON_X = 1;
+    public static final int LOGITECH_BUTTON_Y = 4;
+
+    public static final int LOGITECH_BUTTON_LEFT_BUMPER = 5;
+    public static final int LOGITECH_BUTTON_RIGHT_BUMPER = 6;
+
     //solenoid constants
     public static final int PCM_CAN_ID = 11;
 	public static final int PCM_SLOT_HIGHGEAR = 4;
