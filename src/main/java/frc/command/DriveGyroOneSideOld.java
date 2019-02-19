@@ -8,62 +8,75 @@
 package frc.command;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Gyro;
 import frc.robot.subsystems.TankDrive;
+import frc.util.PIDLoop;
 import frc.robot.Robot;
 
-public class DriveVoltageTime extends Command {
+public class DriveGyroOneSideOld extends Command {
 
-  private double driveTime;
-  private double startTime;
-  private boolean backward;
-  
+  private double angle;
+
   private TankDrive m_tankDrive;
 
+  private String m_side;
+
+  private PIDLoop pidLoop;
+
+  private boolean reached;
+  private long reachedTime;
   private Robot robot;
 
-  public DriveVoltageTime(Robot robot, TankDrive tankDrive, double driveTime) {
+  public DriveGyroOneSideOld(Robot robot, TankDrive tankDrive, double angle, String side) {
     m_tankDrive = tankDrive;
-    this.driveTime = 1000 * Math.abs(driveTime);
-    this.backward = (driveTime < 0);
+    this.angle = angle;
+    m_side = side;
+    reached = false;
     this.robot = robot;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    this.startTime = System.currentTimeMillis();
-    m_tankDrive.autonomousConfig();
-    if(this.backward)
-      m_tankDrive.setPercentage(0.5, 0.5);
-    else
-      m_tankDrive.setPercentage(-0.5, -0.5);
+    m_tankDrive.zeroEncoders();
     robot.pidControl = true;
+    pidLoop = new PIDLoop(SmartDashboard.getNumber("DB/Slider 1",0), SmartDashboard.getNumber("DB/Slider 2", 0), SmartDashboard.getNumber("DB/Slider 3",0), 20, angle);
+    Gyro.reset();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    if(m_side.equals("left")) {
+      m_tankDrive.setPercentage(-pidLoop.get(m_side), 0);
+    } else if(m_side.equals("right")) {
+      m_tankDrive.setPercentage(0, -pidLoop.get(m_side));
+    }
 
+    if(Math.abs(Gyro.angle() + angle) < 5 && !reached) {
+      reached = true;
+      reachedTime = System.currentTimeMillis();
+    }
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    //System.out.println(System.currentTimeMillis() - startTime);
-    return System.currentTimeMillis() - startTime >= driveTime;
+    return reached && System.currentTimeMillis() - reachedTime > 2000;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    //System.out.println("ending");
-    m_tankDrive.setPercentage(0, 0);
     robot.pidControl = false;
+    m_tankDrive.setPercentage(0, 0);
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    end();
   }
 }

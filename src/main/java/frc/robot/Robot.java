@@ -17,8 +17,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.command.DriveGyroOneSide;
-import frc.command.DriveVoltageTime;
+import frc.command.DriveGyroOneSideOld;
 import frc.command.ParkManeuver;
 import frc.command.Teleop;
 import frc.robot.subsystems.BoxManipulator;
@@ -64,6 +63,7 @@ public class Robot extends TimedRobot {
   int presetPosition;
 
   boolean start = false;
+  public boolean pidControl = false;
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -92,6 +92,7 @@ public class Robot extends TimedRobot {
 
     Gyro.init();
     cameras = new CameraControl(320, 240, 15);
+    talonTip.setSelectedSensorPosition(0);
   }
 
   /**
@@ -119,6 +120,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    talonTip.setSelectedSensorPosition(0);
     teleopInit();
   }
 
@@ -158,6 +160,10 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
+    SmartDashboard.putString("DB/String 0", String.valueOf(Gyro.angle()));
+
+    Scheduler.getInstance().run();
+
     if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_A)) {
       //Scheduler.getInstance().removeAll();
       Scheduler.getInstance().add(new ParkManeuver(this, driverJoystick, tankDrive));
@@ -165,19 +171,24 @@ public class Robot extends TimedRobot {
     }
 
     if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_B)) {
-      Scheduler.getInstance().add(new DriveVoltageTime(tankDrive, -1));
+      Scheduler.getInstance().add(new DriveGyroOneSideOld(this, tankDrive, 30, "left"));
     }
 
     if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_X)) {
-      Scheduler.getInstance().add(new DriveVoltageTime(tankDrive, 1));
+      Scheduler.getInstance().add(new DriveGyroOneSideOld(this, tankDrive, 30, "right"));
     }
     
-    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_Y)) {
-      Scheduler.getInstance().add(new DriveGyroOneSide(tankDrive, 20, "left"));
-      //Scheduler.getInstance().add(new DriveGyroOneSide(tankDrive, 20, "left"));
-    }
-    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_TWO_WINDOWS)) {
-      Scheduler.getInstance().add(new DriveGyroOneSide(tankDrive, -20, "right"));
+    // if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_Y)) {
+    //   presetPosition = 0;
+    //   Scheduler.getInstance().add(new DriveGyroOneSide(this, tankDrive, 20, "right"));
+    //   //Scheduler.getInstance().add(new DriveGyroOneSide(tankDrive, 20, "left"));
+    // }
+    // if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_TWO_WINDOWS)) {
+    //   Scheduler.getInstance().add(new DriveGyroOneSide(this, tankDrive, 20, "left"));
+    // }
+
+    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_THREE_LINES)) {
+      Gyro.calibrate();
     }
 
     // if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_THREE_LINES)) {
@@ -196,24 +207,24 @@ public class Robot extends TimedRobot {
     // }
 
     // tankDrive.setPercentage(driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y), driverJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_Y));
-
-    Scheduler.getInstance().run();
     
     //System.out.println("Gyro angle: " + Gyro.angle());
-    SmartDashboard.putString("DB/String 0", String.valueOf(Gyro.angle()));
+    
     //System.out.println("avg difference: " + Gyro.avg());
     //Drivetrain
-    if (Math.abs(driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y)) > 0.1) {
-      talonFR.set(ControlMode.PercentOutput, -driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y));
-      
-    }else{
-      talonFR.set(ControlMode.PercentOutput, 0);
-    }
-    if (Math.abs(driverJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_Y)) > 0.1) {
-      talonFL.set(ControlMode.PercentOutput, -driverJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_Y));
-      
-    }else{
-      talonFL.set(ControlMode.PercentOutput, 0);
+    if(!pidControl) {
+      if (Math.abs(driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y)) > 0.1) {
+        talonFR.set(ControlMode.PercentOutput, -driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y));
+        
+      }else{
+        talonFR.set(ControlMode.PercentOutput, 0);
+      }
+      if (Math.abs(driverJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_Y)) > 0.1) {
+        talonFL.set(ControlMode.PercentOutput, -driverJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_Y));
+        
+      }else{
+        talonFL.set(ControlMode.PercentOutput, 0);
+      }
     }
 
     talonBL.follow(talonFL);
@@ -262,7 +273,7 @@ public class Robot extends TimedRobot {
     } else if (Math.abs(operatorJoystick.getRawAxis(3)) > 0.1) {
          manipulator.pushBox(operatorJoystick.getRawAxis(3));
     }else {
-      manipulator.pushBox(-0.1);
+      manipulator.pushBox(0);
     }
 
 
@@ -280,10 +291,10 @@ public class Robot extends TimedRobot {
     } else if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_Y)) {
       presetPosition = 0;
     }
-    System.out.println("presetPosition: " + presetPosition);
+    //System.out.println("presetPosition: " + presetPosition);
     if (presetPosition == 2100 && manipulator.getPosition() > 1900) {
       manipulator.goPercentOutput(0);
-    } else if (presetPosition == 0 && manipulator.getPosition() < 100) {
+    } else if (presetPosition == 0 && manipulator.getPosition() < 400) {
       manipulator.goPercentOutput(0);
     } else {
       manipulator.goToPosition(presetPosition);
