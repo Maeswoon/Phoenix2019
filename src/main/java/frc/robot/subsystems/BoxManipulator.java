@@ -75,6 +75,30 @@ public class BoxManipulator extends Subsystem {
 	public void openManipulator() {
 		pcm.openManipulator();
 	}
+
+	public void setPidUp() {
+		talonTip.config_kP(0, 1);
+		talonTip.config_kI(0, 0.0005);
+		talonTip.config_kD(0, 0);
+		talonTip.config_kF(0, 0);
+
+		talonTip.config_kP(1, 1);
+		talonTip.config_kI(1, 0.0005);
+		talonTip.config_kD(1, 0);
+		talonTip.config_kF(1, 0);
+	}
+
+	public void setPidDown() {
+		talonTip.config_kP(0, SmartDashboard.getNumber("DB/Slider 0", 0));
+		talonTip.config_kI(0, SmartDashboard.getNumber("DB/Slider 1", 0));
+		talonTip.config_kD(0, SmartDashboard.getNumber("DB/Slider 2", 0));
+		talonTip.config_kF(0, SmartDashboard.getNumber("DB/Slider 3", 0));
+
+		talonTip.config_kP(1, SmartDashboard.getNumber("DB/Slider 0", 0));
+		talonTip.config_kI(1, SmartDashboard.getNumber("DB/Slider 1", 0));
+		talonTip.config_kD(1, SmartDashboard.getNumber("DB/Slider 2", 0));
+		talonTip.config_kF(1, SmartDashboard.getNumber("DB/Slider 3", 0));
+	}
 	
 	public void goToPosition(double position) {
 		talonTip.set(ControlMode.Position, position);

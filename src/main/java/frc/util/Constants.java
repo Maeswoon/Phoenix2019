@@ -73,4 +73,10 @@ public class Constants {
 
     public static final int PCM_HATCH_MANIP = 7;
     
+    //manipulator positions
+    public static final int MANIPULATOR_TOP = 0;
+    public static final int MANIPULATOR_VERTICAL = -470;
+    public static final int MANIPULATOR_PRESET = -1200;
+    public static final int MANIPULATOR_LOW = -1900;
+    public static final int MANIPULATOR_BOTTOM = -2100; //ish?
 }

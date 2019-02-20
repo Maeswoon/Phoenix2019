@@ -152,7 +152,7 @@ public class Robot extends TimedRobot {
 		talonTip.config_kP(1, SmartDashboard.getNumber("DB/Slider 1",0), 10);
 		talonTip.config_kI(1, SmartDashboard.getNumber("DB/Slider 2",0), 10);
 		talonTip.config_kD(1, SmartDashboard.getNumber("DB/Slider 3",0), 10);
-
+    talonTip.setSelectedSensorPosition(0);
   } 
   /**
    * This function is called periodically during operator control.
@@ -283,25 +283,65 @@ public class Robot extends TimedRobot {
     if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_RIGHT_BUMPER)) {
       manipulator.closeManipulator();
     }
+    
 
-    if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_A)) {
-      presetPosition = 2100;
-    } else if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_B)) {
-      presetPosition = 1000;
-    } else if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_Y)) {
-      presetPosition = 0;
-    }
-    //System.out.println("presetPosition: " + presetPosition);
-    if (presetPosition == 2100 && manipulator.getPosition() > 1900) {
-      manipulator.goPercentOutput(0);
-    } else if (presetPosition == 0 && manipulator.getPosition() < 400) {
-      manipulator.goPercentOutput(0);
-    } else {
-      manipulator.goToPosition(presetPosition);
-    }
-    if (Math.abs(operatorJoystick.getRawAxis(1)) > 0.05) {
-      //manipulator.goPercentOutput(operatorJoystick.getRawAxis(1) * 0.8);
-    } 
+    // if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_A)) {
+    //   manipulator.setPidDown();
+    //   presetPosition = -2100;
+    // } else if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_B)) {
+    //   if(presetPosition > -1300) {
+    //     manipulator.setPidUp();
+    //   } else if(presetPosition < -1300) {
+    //     manipulator.setPidDown();
+    //   }
+    //   presetPosition = -1300;
+    // } else if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_Y)) {
+    //   manipulator.setPidUp();
+    //   presetPosition = -400;
+    // }
+    // //System.out.println("presetPosition: " + presetPosition);
+    // if (presetPosition == -2100 && manipulator.getPosition() < -1700) {
+    //   if(manipulator.getPosition() < -2000)
+    //     manipulator.goPercentOutput(0);
+    //   else 
+    //     manipulator.goPercentOutput(0.1);
+    // } else if (presetPosition == -400 && manipulator.getPosition() > -400) {
+    //   manipulator.goPercentOutput(0);
+    // } else {
+    //   manipulator.goToPosition(presetPosition);
+    // }
+    // if (Math.abs(operatorJoystick.getRawAxis(1)) > 0.05) {
+    //   //manipulator.goPercentOutput(operatorJoystick.getRawAxis(1) * 0.8);
+    // } 
+
+      // if(operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_A)) {
+      //   if(presetPosition != Constants.MANIPULATOR_TOP);
+      //     manipulator.setPidUp();
+      //   presetPosition = Constants.MANIPULATOR_TOP;
+      // } else if(operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_B)) {
+      //   if(presetPosition > Constants.MANIPULATOR_PRESET)
+      //     manipulator.setPidDown();
+      //   else if(presetPosition < Constants.MANIPULATOR_PRESET)
+      //     manipulator.setPidUp();
+      //   presetPosition = Constants.MANIPULATOR_PRESET;
+      // } else if(operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_Y)) {
+      //   presetPosition = Constants.MANIPULATOR_BOTTOM;
+      // }
+
+      // if(presetPosition == Constants.MANIPULATOR_TOP) {
+      //   manipulator.goToPosition(Constants.MANIPULATOR_TOP);
+      // } else if(presetPosition == Constants.MANIPULATOR_PRESET) {
+      //   manipulator.goToPosition(Constants.MANIPULATOR_PRESET);
+      // } else if(presetPosition == Constants.MANIPULATOR_BOTTOM) {
+      //   if(manipulator.getPosition() > Constants.MANIPULATOR_VERTICAL) {
+      //     manipulator.goToPosition(Constants.MANIPULATOR_BOTTOM);
+      //   } else if(manipulator.getPosition() > Constants.MANIPULATOR_LOW) {
+      //     manipulator.goPercentOutput(-0.1);
+      //   } else {
+      //     manipulator.goPercentOutput(0);
+      //   }
+      // }
+
     // if (!start) {
     //   manipulator.goPercentOutput(0.5);
     //   start = true;
